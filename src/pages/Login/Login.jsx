@@ -1,52 +1,57 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FcGoogle } from 'react-icons/fc'
 import useAuth from '../../hooks/useAuth'
-import axios from 'axios';
 import toast from 'react-hot-toast';
-import { TbFidgetSpinner } from "react-icons/tb";
+import { PiSpinnerBold } from "react-icons/pi";
+import { useState } from 'react';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { createUser, signInWithGoogle, updateUserProfile, loading, setLoading } = useAuth();
-  const handleSignup = async e => {
+  const location= useLocation();
+  const from = location?.state || "/"
+  const { signIn, signInWithGoogle, resetPassword, loading, setLoading } = useAuth();
+  const [email, setEmail] = useState('');
+
+
+  const handleLogin = async e => {
     e.preventDefault();
-    const from = e.target
-    const name = from.name.value;
-    const image = from.image.files[0]
-    const email = from.email.value;
-    const password = from.password.value;
-    const formData = new FormData()
-    formData.append('image', image)
+    const form = e.target
+    const email = form.email.value;
+    const password = form.password.value;
+
     try {
-      setLoading(true)
-      // 1. upload image url get img url 
-      const { data } = await axios.post(
-        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_APY_KEY
-        }`,
-        formData
-      );
-      // 2. create user acount
-      const res = await createUser(email, password)
-      console.log(res);
-
-
-      // 3. Update profile user name and photo in firebase
-      await updateUserProfile(name, data.data.display_url);
-      navigate('/')
+      await signIn(email, password)
+      navigate(from)
       toast.success('Signup successfull')
 
     } catch (error) {
       console.log(error);
-      toast.error(error.message)
+      toast.error(error.message);
+      setLoading(false)
     }
 
+  }
+
+  // handle reset password
+  const handleResetPassword = async () => {
+    if(!email) return toast.error("Please write your email first");
+    try {
+      await resetPassword(email)
+      toast.success('Request success! Check your email for further process...')
+      setLoading(false)
+
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+      setLoading(false)
+    }
   }
   // handle google sing in 
   const handleGoogle = async () => {
     try {
       await signInWithGoogle();
-      navigate('/')
-      toast.success('Signup successfull')
+      navigate(from)
+      toast.success('Login successfull')
 
     } catch (error) {
       console.log(error);
@@ -66,8 +71,7 @@ const Login = () => {
           </p>
         </div>
         <form
-          noValidate=''
-          action=''
+          onSubmit={handleLogin}
           className='space-y-6 ng-untouched ng-pristine ng-valid'
         >
           <div className='space-y-4'>
@@ -76,6 +80,7 @@ const Login = () => {
                 Email address
               </label>
               <input
+              onBlur={e => setEmail(e.target.value)}
                 type='email'
                 name='email'
                 id='email'
@@ -109,12 +114,12 @@ const Login = () => {
               type='submit'
               className='bg-rose-500 w-full rounded-md py-3 text-white'
             >
-              {loading ? <TbFidgetSpinner className='animate-spin m-auto' /> : " Continue"}
+              {loading ? <PiSpinnerBold className='animate-spin m-auto' /> : "Login"}
             </button>
           </div>
         </form>
         <div className='space-y-1'>
-          <button className='text-xs hover:underline hover:text-rose-500 text-gray-400'>
+          <button onClick={handleResetPassword} className='text-xs hover:underline hover:text-rose-500 text-gray-400'>
             Forgot password?
           </button>
         </div>
@@ -125,9 +130,11 @@ const Login = () => {
           </p>
           <div className='flex-1 h-px sm:w-16 dark:bg-gray-700'></div>
         </div>
-        <div className='flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer'>
+        <div
+          disabled={loading}
+          onClick={handleGoogle}
+          className='disabled:cursor-not-allowed flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer'>
           <FcGoogle size={32} />
-
           <p>Continue with Google</p>
         </div>
         <p className='px-6 text-sm text-center text-gray-400'>
@@ -136,7 +143,7 @@ const Login = () => {
             to='/signup'
             className='hover:underline hover:text-rose-500 text-gray-600'
           >
-            Sign up
+            Registration
           </Link>
           .
         </p>

@@ -1,22 +1,24 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FcGoogle } from 'react-icons/fc'
 import useAuth from '../../hooks/useAuth'
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { TbFidgetSpinner } from "react-icons/tb";
+import { PiSpinnerBold } from "react-icons/pi";
 
 
 
 const SignUp = () => {
+  const location= useLocation();
+  const from = location?.state || "/"
   const navigate = useNavigate();
   const { createUser, signInWithGoogle,   updateUserProfile, loading, setLoading } = useAuth();
   const handleSignup = async e => {
     e.preventDefault();
-    const from = e.target
-    const name = from.name.value;
-    const image = from.image.files[0]
-    const email = from.email.value;
-    const password = from.password.value;
+    const form = e.target
+    const name = form.name.value;
+    const image = form.image.files[0]
+    const email = form.email.value;
+    const password = form.password.value;
     const formData = new FormData()
     formData.append('image', image)
     try {
@@ -35,8 +37,8 @@ const SignUp = () => {
 
         // 3. Update profile user name and photo in firebase
         await updateUserProfile(name, data.data.display_url);
-        navigate('/')
-        toast.success('Signup successfull')
+        navigate(from)
+        toast.success('Registration successfull')
       
     } catch (error) {
       console.log(error);
@@ -48,7 +50,7 @@ const SignUp = () => {
     const handleGoogle = async () =>{
       try {
         await signInWithGoogle();
-          navigate('/')
+          navigate(from)
           toast.success('Signup successfull')
         
       } catch (error) {
@@ -131,7 +133,7 @@ const SignUp = () => {
               type='submit'
               className='bg-rose-500 w-full rounded-md py-3 text-white'
             >
-             {loading ? <TbFidgetSpinner className='animate-spin m-auto' /> : " Continue"}
+             {loading ? <PiSpinnerBold className='animate-spin m-auto' /> : " Register"}
             </button>
           </div>
         </form>
