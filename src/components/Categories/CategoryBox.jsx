@@ -30,6 +30,7 @@ const CategoryBox = ({ label, icon: Icon }) => {
                   gap-2
                   p-3
                   border-b-2
+                
                   hover:text-neutral-800
                   transition
                   cursor-pointer  ${category === label && 'border-b-neutral-800 text-neutral-800'}`}

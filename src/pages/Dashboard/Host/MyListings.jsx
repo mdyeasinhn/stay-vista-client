@@ -1,12 +1,14 @@
 import { Helmet } from 'react-helmet-async'
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import useAuth from '../../../hooks/useAuth';
 import LoadingSpinner from '../../../components/Shared/LoadingSpinner';
 import RoomDataRow from '../../../components/Dashboard/TableRows/RoomDataRow';
+import toast from 'react-hot-toast';
 const MyListings = () => {
   const axiosSecure = useAxiosSecure();
     const {user} = useAuth()
+    // fetch room data
     const {data : rooms = [], isLoading, refetch} = useQuery({
         queryKey : ['my-list', user?.email],
         queryFn : async() => {
@@ -14,11 +16,33 @@ const MyListings = () => {
           return data
         }
       })
+      // Delete
+      const {mutateAsync} =useMutation({
+        mutationFn : async (id) => {
+          const {data} = await axiosSecure.delete(`/room/${id}`)
+          return data
+        },
+        onSuccess: data =>{
+          console.log(data);
+          refetch()
+          toast.success('Room deleted Successfully!')
+        }
+      })
+      const handleDelete =async (id) =>{
+        try {
+        await mutateAsync(id)
+          
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      // Loading spinner
       if (isLoading) return <LoadingSpinner />
   return (
     <>
       <Helmet>
-        <title>My Listings</title>
+        <title>Dashboard | My Listings</title>
       </Helmet>
 
       <div className='container mx-auto px-4 sm:px-8'>
@@ -74,7 +98,7 @@ const MyListings = () => {
                 </thead>
                 <tbody>
                     {rooms.map(room => (
-                        <RoomDataRow key={room._id} room={room} refetch={refetch} />
+                        <RoomDataRow key={room._id} room={room}  handleDelete={handleDelete} />
                     ))}
                     </tbody>
               </table>
