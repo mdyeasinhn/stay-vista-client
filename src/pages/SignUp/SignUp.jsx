@@ -4,6 +4,7 @@ import useAuth from '../../hooks/useAuth'
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { PiSpinnerBold } from "react-icons/pi";
+import { imageUploadFn } from '../../api/Utils';
 
 
 
@@ -19,24 +20,18 @@ const SignUp = () => {
     const image = form.image.files[0]
     const email = form.email.value;
     const password = form.password.value;
-    const formData = new FormData()
-    formData.append('image', image)
+   
     try {
       setLoading(true)
       // 1. upload image url get img url 
-      const {data} = await axios.post(
-        `https://api.imgbb.com/1/upload?key=${
-          import.meta.env.VITE_IMGBB_APY_KEY
-        }`,
-        formData
-        );
+      const imageUrl = await imageUploadFn(image)
         // 2. create user acount
         const res = await createUser(email, password)
         console.log(res);
 
 
         // 3. Update profile user name and photo in firebase
-        await updateUserProfile(name, data.data.display_url);
+        await updateUserProfile(name, imageUrl);
         navigate(from)
         toast.success('Registration successfull')
       
