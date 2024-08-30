@@ -13,7 +13,7 @@ const AddRoom = () => {
     const navigate = useNavigate()
     const axiosSecure = useAxiosSecure();
     const { user } = useAuth()
-    const [ loading, setLoading ] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState()
     const [imageText, setImageText] = useState('Upload Image')
     const [dates, setDates] = useState(
@@ -23,7 +23,7 @@ const AddRoom = () => {
             key: 'selection'
         }
     )
-
+    // post data form db
     const { mutateAsync } = useMutation({
         mutationFn: async roomData => {
             const { data } = await axiosSecure.post(`/add-room`, roomData)
