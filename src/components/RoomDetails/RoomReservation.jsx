@@ -14,8 +14,8 @@ const RoomReservation = ({ room }) => {
   ]);
 
   const totalDays = parseInt(
-    differenceInCalendarDays(new Date(room.to), new Date(room.from))
-  ) * room?.price
+    (differenceInCalendarDays(new Date(room.to), new Date(room.from))
+  )+1 )* room?.price
   console.log(totalDays);
   return (
     <div className='rounded-xl border-[1px] border-neutral-200 overflow-hidden bg-white'>
