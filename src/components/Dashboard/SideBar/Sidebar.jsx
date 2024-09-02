@@ -11,16 +11,26 @@ import useAuth from '../../../hooks/useAuth'
 import { Link } from 'react-router-dom'
 import useRole from '../../../hooks/useRole'
 import MenuItem from './Menu/MenuItem'
+import HostMenu from './Menu/HostMenu'
+import GuestMenu from './Menu/GuestMenu'
+import AdminMenu from './Menu/AdminMenu'
+import ToggleBtn from '../../Shared/Button/ToggleBtn'
 
 const Sidebar = () => {
   const { logOut } = useAuth()
   const [isActive, setActive] = useState(false);
+  const [toggle, setToggle] = useState(true);
   const [role, isLoading] = useRole();
   console.log(role, isLoading);
 
   // Sidebar Responsive Handler
   const handleToggle = () => {
     setActive(!isActive)
+  }
+
+  const toggleHandler = (e) => {
+    console.log(e.target.checked);
+    setToggle(e.target.checked)
   }
   return (
     <>
@@ -71,19 +81,16 @@ const Sidebar = () => {
           {/* Nav Items */}
           <div className='flex flex-col justify-between flex-1 mt-6'>
             {/* Conditional toggle button here.. */}
+            {role === 'host' && <ToggleBtn toggleHandler={toggleHandler} toggle={toggle} />}
 
             {/*  Menu Items */}
             <nav>
               {/* Statistics */}
               <MenuItem address='/dashboard' label='Statistics' icon={BsGraphUp} />
 
-
-              {/* Add Room */}
-              <MenuItem address='add-room' label='Add Room' icon={BsFillHouseAddFill} />
-
-
-              {/* My Listing */}
-              <MenuItem address='my-listings' label='My Listings' icon={MdHomeWork} />
+              {role === 'guest' && <GuestMenu />}
+              {role === 'host' ? toggle ?  <HostMenu />    :  <GuestMenu /> : undefined }
+              {role === 'admin' && <AdminMenu />}
 
 
             </nav>
@@ -96,7 +103,7 @@ const Sidebar = () => {
           {/* Profile Menu */}
           <MenuItem address='/dashboard/profile' label='Profile' icon={FcSettings} />
 
-         
+
           <button
             onClick={logOut}
             className='flex w-full items-center px-4 py-2 mt-5 text-gray-600 hover:bg-gray-300   hover:text-gray-700 transition-colors duration-300 transform'
