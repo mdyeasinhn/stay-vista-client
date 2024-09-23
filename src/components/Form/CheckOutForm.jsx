@@ -7,14 +7,17 @@ import './CheckOutForm.css';
 import { useEffect, useState } from 'react';
 import useAxisoSecure from '../../hooks/useAxiosSecure'
 import useAuth from '../../hooks/useAuth';
-const CheckoutForm = ({ closeModal, bookingInfo }) => {
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom';
+const CheckoutForm = ({ closeModal, bookingInfo, refetch }) => {
   const axiosSecure = useAxisoSecure();
   const { user } = useAuth()
   const stripe = useStripe();
   const elements = useElements();
   const [clientSecret, setClientSecret] = useState();
   const [cardError, setCardError] = useState('')
-  const [processing, setProcessing] = useState(false)
+  const [processing, setProcessing] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     // Fetch client secret 
     if (bookingInfo?.price && bookingInfo?.price > 1) {
@@ -89,7 +92,22 @@ const CheckoutForm = ({ closeModal, bookingInfo }) => {
         transactionId: paymentIntent.id,
         date: new Date(),
       }
+      delete paymentInfo._id
       console.log(paymentInfo);
+      try {
+        // save paymentinfo
+        await axiosSecure.post('/booking', paymentInfo);
+
+        // update room status
+        await axiosSecure.patch(`/room/status/${bookingInfo?._id}`, {status : true});
+
+        refetch()
+        closeModal()
+        toast.success('Room booked successfully')
+        navigate('/dashboard/my-bookings')
+      } catch (error) {
+        
+      }
     }
     setProcessing(false)
 

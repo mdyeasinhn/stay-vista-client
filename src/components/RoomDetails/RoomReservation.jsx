@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { DateRange } from 'react-date-range';
 import { differenceInCalendarDays } from 'date-fns';
 import BookingModal from '../Modal/BookingModal';
+import useAuth from '../../hooks/useAuth';
 
-const RoomReservation = ({ room }) => {
+const RoomReservation = ({ room, refetch }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, } = useAuth()
   const [state, setState] = useState([
     {
       startDate: new Date(room.from),
@@ -46,12 +48,20 @@ const RoomReservation = ({ room }) => {
       </div>
       <hr />
       <div className='p-4'>
-        <Button onClick={() => setIsOpen(true)} label={'Reserve'} />
+        <Button disabled={room?.booked === true}
+         onClick={() => setIsOpen(true)} 
+         label={room?.booked === true ?"Booked":'Reserve'} />
       </div>
       {/* Modal */}
-      <BookingModal isOpen={isOpen} closeModal={closeModal} bookingInfo={{ ...room, price: totalPrice, guest: { name: "" } }} />
+      <BookingModal refetch={refetch} isOpen={isOpen} closeModal={closeModal} bookingInfo={{
+        ...room, price: totalPrice, guest: {
+          name: user?.displayName,
+          email: user?.email,
+          image: user?.photoURL,
+        },
+      }} />
       <hr />
- 
+
       <div className='p-4 flex items-center justify-between font-semibold text-lg'>
         <div>Total</div>
         <div>${totalPrice}</div>
