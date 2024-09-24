@@ -155,7 +155,7 @@ const CheckoutForm = ({ closeModal, bookingInfo, refetch }) => {
         </div>
       </form>
       {
-        cardError && <p className='text-red-600 ml-8'>{cardError}</p>
+        cardError && <p className='text-red-600 ml-20 mt-4'>{cardError}</p>
       }
     </>
   );
