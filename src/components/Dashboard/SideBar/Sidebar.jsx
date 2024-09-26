@@ -86,17 +86,17 @@ const Sidebar = () => {
             {/*  Menu Items */}
             <nav>
               {/* Statistics */}
-              <MenuItem address='/dashboard' label='Statistics' icon={BsGraphUp} />
+              <MenuItem address='/dashboard' label='Statistics' icon={BsGraphUp} closeSidebar={handleToggle} />
           
-              {role === 'guest' ?  <GuestMenu /> : null}
+              {role === 'guest' ?  <GuestMenu closeSidebar={handleToggle} /> : null}
               {role === 'host' ? (
                 toggle ? (
-                  <HostMenu />
+                  <HostMenu closeSidebar={handleToggle}/>
                 ) : (
                   <GuestMenu />
                 )
               ) : undefined}
-              {role === 'admin' && <AdminMenu />}
+              {role === 'admin' && <AdminMenu closeSidebar={handleToggle} />}
 
 
             </nav>
