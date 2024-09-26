@@ -2,10 +2,15 @@ import useAuth from '../../../hooks/useAuth'
 import { Helmet } from 'react-helmet-async'
 import useRole from '../../../hooks/useRole'
 import LoadingSpinner from '../../../components/Shared/LoadingSpinner'
+import { useState } from 'react'
+import UpdateUserInfoModal from '../../../components/Modal/UpdateUserInfoModal'
+import ChangePassModal from '../../../components/Modal/ChangePassModal'
 
 const Profile = () => {
   const { user, loading } = useAuth() || {}
   const [role, isLoading] = useRole()
+  const [isEditOpen, setIsEditModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   console.log(user)
 //   loading spinner
@@ -34,7 +39,7 @@ const Profile = () => {
             {role}
           </p>
           <p className='mt-2 text-xl font-medium text-gray-800 '>
-            User Id: {user?.uid}
+          User Id: {user?.uid?.slice(0, 8)}...
           </p>
           <div className='w-full p-2 mt-4 rounded-lg'>
             <div className='flex flex-wrap items-center justify-between text-sm text-gray-600 '>
@@ -50,13 +55,19 @@ const Profile = () => {
               </p>
 
               <div>
-                <button className='bg-[#F43F5E] px-10 py-1 rounded-lg text-white cursor-pointer hover:bg-[#af4053] block mb-1'>
+                <button onClick={() => setIsEditModalOpen(true)}  className='bg-[#F43F5E] px-10 py-1 rounded-lg text-white cursor-pointer hover:bg-[#af4053] block mb-1'>
                   Update Profile
                 </button>
-                <button className='bg-[#F43F5E] px-7 py-1 rounded-lg text-white cursor-pointer hover:bg-[#af4053]'>
+                <UpdateUserInfoModal isOpen={isEditOpen} setIsEditModalOpen={setIsEditModalOpen}/>
+
+
+                {/* <button onClick={()=> setIsOpen(true)}  className='bg-[#F43F5E] px-7 py-1 rounded-lg text-white cursor-pointer hover:bg-[#af4053]'>
                   Change Password
                 </button>
+                <ChangePassModal isOpen={isOpen}  setIsOpen={setIsOpen}/> */}
+
               </div>
+             
             </div>
           </div>
         </div>

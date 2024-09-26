@@ -14,7 +14,8 @@ const AddRoom = () => {
     const axiosSecure = useAxiosSecure();
     const { user } = useAuth()
     const [loading, setLoading] = useState(false);
-    const [imagePreview, setImagePreview] = useState()
+    const [imagePreview, setImagePreview] = useState();
+    // console.log(imagePreview);
     const [imageText, setImageText] = useState('Upload Image')
     const [dates, setDates] = useState(
         {

@@ -1,8 +1,16 @@
 import { useState } from 'react'
 import { categories } from '../Categories/CategoriesData'
 import { DateRange } from 'react-date-range';
-
-const UpdateRoomForm = ({ handleUpdate, handleImage, setRoomData, roomData, handleDates, dates }) => {
+import { TbFidgetSpinner } from 'react-icons/tb'
+const UpdateRoomForm = ({
+    handleUpdate,
+    handleImage,
+    setRoomData,
+    roomData,
+    handleDates,
+    dates,
+    loading
+}) => {
 
     return (
         <div className='w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
@@ -68,6 +76,7 @@ const UpdateRoomForm = ({ handleUpdate, handleImage, setRoomData, roomData, hand
                                 editableDateInputs={true}
                                 onChange={range => handleDates(range)}
                                 moveRangeOnFirstSelection={false}
+                                minDate={new Date()}
                                 ranges={[dates]}
                             />
                         </div>
@@ -181,7 +190,11 @@ const UpdateRoomForm = ({ handleUpdate, handleImage, setRoomData, roomData, hand
                     type='submit'
                     className='w-full p-3 mt-5 text-center font-medium text-white transition duration-200 rounded shadow-md bg-rose-500'
                 >
-                    Update
+                    {loading ? (
+                        <TbFidgetSpinner className='animate-spin m-auto' />
+                    ) : (
+                        'Update'
+                    )}
                 </button>
             </form>
         </div>

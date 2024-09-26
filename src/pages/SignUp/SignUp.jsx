@@ -3,7 +3,7 @@ import { FcGoogle } from 'react-icons/fc'
 import useAuth from '../../hooks/useAuth'
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { PiSpinnerBold } from "react-icons/pi";
+import { TbFidgetSpinner } from 'react-icons/tb'
 import { imageUploadFn } from '../../api/Utils';
 
 
@@ -128,7 +128,7 @@ const SignUp = () => {
               type='submit'
               className='bg-rose-500 w-full rounded-md py-3 text-white'
             >
-             {loading ? <PiSpinnerBold className='animate-spin m-auto' /> : " Register"}
+             {loading ? <TbFidgetSpinner className='animate-spin m-auto' /> : " Register"}
             </button>
           </div>
         </form>

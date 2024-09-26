@@ -45,13 +45,15 @@ const Navbar = () => {
     }
   }
 
-  // const handleLogOut = async =>{
-  //   // await logOut()
-  //   // try {
-  //   // } catch (error) {
-
-  //   // }
-  // }
+  const handleLogOut = () => {
+    logOut()
+        .then(
+          
+        )
+        .catch(err => {
+            console.error(err);
+        })
+}
 
   return (
     <div className='fixed w-full bg-white z-10 shadow-sm'>
@@ -125,7 +127,7 @@ const Navbar = () => {
                           Dashboard
                         </Link>
                         <div
-                          onClick={logOut}
+                          onClick={handleLogOut}
                           className='px-4 py-3 hover:bg-neutral-100 transition font-semibold cursor-pointer'
                         >
                           Logout

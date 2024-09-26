@@ -9,11 +9,13 @@ import {
 import { Fragment, useState } from 'react'
 import UpdateRoomForm from '../Form/UpdateRoomForm'
 import { imageUploadFn } from '../../api/Utils'
-import { useMutation } from '@tanstack/react-query'
+import {  useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosSecure from '../../hooks/useAxiosSecure'
+import { MdCancel } from "react-icons/md";
 import toast from 'react-hot-toast'
 
 const UpdateRoomModal = ({ setIsEditModalOpen, isOpen, room, refetch }) => {
+  const queryClient = useQueryClient()
   const axiosSecure = useAxiosSecure()
   const [roomData, setRoomData] = useState(room);
   const [loading, setLoading] = useState();
@@ -45,6 +47,7 @@ const UpdateRoomModal = ({ setIsEditModalOpen, isOpen, room, refetch }) => {
   const handleDates = range => {
     console.log(range);
     setDates(range.selection)
+    setRoomData({...roomData, to: range.selection.endDate, from : range.selection.startDate})
   }
 
 
@@ -55,12 +58,12 @@ const UpdateRoomModal = ({ setIsEditModalOpen, isOpen, room, refetch }) => {
       return data
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['room'] })
       refetch()
       setIsEditModalOpen(false)
       console.log('Data save at Mongodb');
       setLoading(false);
       toast.success('Home info updated')
-
     },
     onError: (error) => {
       toast.error(error.message);
@@ -96,6 +99,7 @@ const UpdateRoomModal = ({ setIsEditModalOpen, isOpen, room, refetch }) => {
         </TransitionChild>
 
         <div className='fixed inset-0 overflow-y-auto'>
+          
           <div className='flex min-h-full items-center justify-center p-4 text-center'>
             <TransitionChild
               as={Fragment}
@@ -106,6 +110,7 @@ const UpdateRoomModal = ({ setIsEditModalOpen, isOpen, room, refetch }) => {
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'
             >
+              
               <DialogPanel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
                 <DialogTitle
                   as='h3'
@@ -113,7 +118,16 @@ const UpdateRoomModal = ({ setIsEditModalOpen, isOpen, room, refetch }) => {
                 >
                   Update Room Info
                 </DialogTitle>
-                <div className='mt-2 w-full'>{/* Update room form */}
+                <div className='mt-2 w-full mb-4'>{/* Update room form */}
+                <div className='text-end -mt-8 mb-4'>
+                  <button
+                    type=''
+                    className='  '
+                    onClick={() => setIsEditModalOpen(false)}
+                  >
+                <MdCancel className='text-4xl text-rose-500  focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2'/>
+                  </button>
+                </div>
                   <UpdateRoomForm
                     dates={dates}
                     handleDates={handleDates}
@@ -124,16 +138,7 @@ const UpdateRoomModal = ({ setIsEditModalOpen, isOpen, room, refetch }) => {
                     setRoomData={setRoomData}
                   />
                 </div>
-                <hr className='mt-8 ' />
-                <div className='mt-2 '>
-                  <button
-                    type='button'
-                    className='inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2'
-                    onClick={() => setIsEditModalOpen(false)}
-                  >
-                    Cancel
-                  </button>
-                </div>
+              
               </DialogPanel>
             </TransitionChild>
           </div>
