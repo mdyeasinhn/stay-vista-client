@@ -107,7 +107,7 @@ const Sidebar = () => {
           <hr />
 
           {/* Profile Menu */}
-          <MenuItem address='/dashboard/profile' label='Profile' icon={FcSettings} />
+          <MenuItem address='/dashboard/profile' label='Profile' icon={FcSettings} closeSidebar={handleToggle}/>
 
 
           <button

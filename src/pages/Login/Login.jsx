@@ -4,14 +4,16 @@ import useAuth from '../../hooks/useAuth'
 import toast from 'react-hot-toast';
 import { TbFidgetSpinner } from 'react-icons/tb'
 import { useState } from 'react';
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const navigate = useNavigate();
-  const location= useLocation();
+  const location = useLocation();
+  const [showPassword, setShowPassword] = useState(false);
   const from = location?.state || "/"
   const { signIn, signInWithGoogle, resetPassword, loading, setLoading } = useAuth();
   const [email, setEmail] = useState('');
+
 
 
   const handleLogin = async e => {
@@ -35,7 +37,7 @@ const Login = () => {
 
   // handle reset password
   const handleResetPassword = async () => {
-    if(!email) return toast.error("Please write your email first");
+    if (!email) return toast.error("Please write your email first");
     try {
       await resetPassword(email)
       toast.success('Request success! Check your email for further process...')
@@ -57,6 +59,7 @@ const Login = () => {
     } catch (error) {
       console.log(error);
       toast.error(error.message)
+      setLoading(false)
     }
   }
 
@@ -81,7 +84,7 @@ const Login = () => {
                 Email address
               </label>
               <input
-              onBlur={e => setEmail(e.target.value)}
+                onBlur={e => setEmail(e.target.value)}
                 type='email'
                 name='email'
                 id='email'
@@ -91,14 +94,14 @@ const Login = () => {
                 data-temp-mail-org='0'
               />
             </div>
-            <div>
+            <div className='relative'>
               <div className='flex justify-between'>
                 <label htmlFor='password' className='text-sm mb-2'>
                   Password
                 </label>
               </div>
               <input
-                type='password'
+                type={showPassword ? "text" : "password"}
                 name='password'
                 autoComplete='current-password'
                 id='password'
@@ -106,6 +109,11 @@ const Login = () => {
                 placeholder='*******'
                 className='w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-rose-500 bg-gray-200 text-gray-900'
               />
+              <span className="absolute top-10 right-2" onClick={() => setShowPassword(!showPassword)}>
+                {
+                  showPassword ? <FaEye></FaEye> : <FaEyeSlash></FaEyeSlash>
+                }
+              </span>
             </div>
           </div>
 

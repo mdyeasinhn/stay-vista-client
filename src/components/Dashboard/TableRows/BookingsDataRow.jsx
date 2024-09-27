@@ -39,8 +39,8 @@ const BookingDataRow = ({ booking, refetch }) => {
 
     // Loading spinner
     return (
-        <tr>
-            <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
+        <tr >
+            <td className='px-5 py-5  border-b border-gray-200 bg-white text-sm '>
                 <div className='flex items-center'>
                     <div className='flex-shrink-0'>
                         <div className='block relative'>
@@ -51,9 +51,9 @@ const BookingDataRow = ({ booking, refetch }) => {
                             />
                         </div>
                     </div>
-                    <div className='ml-3'>
+                    {/* <div className='ml-3'>
                         <p className='text-gray-900 whitespace-no-wrap'>{booking?.title}</p>
-                    </div>
+                    </div> */}
                 </div>
             </td>
             <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
